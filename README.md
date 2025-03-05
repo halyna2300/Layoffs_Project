@@ -164,12 +164,14 @@ FROM layoffs_staging2
 WHERE percentage_laid_off = 1
 ORDER BY funds_raised_millions DESC;
 ```
+
 ```sql
 SELECT company, SUM(total_laid_off)
 FROM layoffs_staging2
 GROUP BY company
 ORDER BY 2 DESC;
 ```
+
 ```sgl
 SELECT MIN(date),MAX(date)
 FROM layoffs_staging2;
