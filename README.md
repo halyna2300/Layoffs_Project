@@ -1,4 +1,4 @@
-# Layoffs Data Cleaning & Analysis Project
+<h1 align="center">Layoffs Data Cleaning & Analysis Project</h1>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/halyna2300/Layoffs_Project/main/IMG_8560.JPG">
