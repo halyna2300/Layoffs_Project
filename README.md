@@ -37,7 +37,9 @@ CREATE TABLE `layoffs_staging` (
 - ** Null values/ blank values**
 - ** Remove any columns**
 
-## SELECT * FROM layoffs;
+```sql
+ SELECT * FROM layoffs;
+```
 
 ```sql
 CREATE TABLE layoffs_staging LIKE layoffs;
