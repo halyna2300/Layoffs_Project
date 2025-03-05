@@ -41,9 +41,10 @@ CREATE TABLE `layoffs_staging` (
 
 ```sql
 CREATE TABLE layoffs_staging LIKE layoffs;
-
+```
+```sql
 SELECT * FROM layoffs_staging;
-
+```
 INSERT INTO layoffs_staging SELECT * FROM layoffs;
 ```
 
