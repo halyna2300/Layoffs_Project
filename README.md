@@ -95,22 +95,34 @@ CREATE TABLE layoffs_staging2 (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 
+```sql
 INSERT INTO layoffs_staging2
 SELECT *, ROW_NUMBER() OVER (
     PARTITION BY company, location, industry, total_laid_off, percentage_laid_off, `date`, stage, country, funds_raised_millions
 ) AS row_num FROM layoffs_staging;
+```
 
+```sql
 SELECT * FROM layoffs_staging2;
+```
 
+```sql
 UPDATE layoffs_staging2 SET date = NULL WHERE date = ' ';
 UPDATE layoffs_staging2 SET total_laid_off = NULL WHERE total_laid_off = '';
 UPDATE layoffs_staging2 SET funds_raised_millions = NULL WHERE funds_raised_millions = '' OR funds_raised_millions = 'None';
-
+```
+```sql
 UPDATE layoffs_staging2 SET company = TRIM(company);
 UPDATE layoffs_staging2 SET industry = 'Crypto' WHERE industry LIKE 'Crypto%';
 UPDATE layoffs_staging2 SET country = TRIM(TRAILING '.' FROM country) WHERE country LIKE 'United States%';
 UPDATE layoffs_staging2 SET date = STR_TO_DATE(date, '%m/%d/%Y');
+```
+```sql
 ALTER TABLE layoffs_staging2 MODIFY COLUMN `date` DATE;
-
+```
+```sql
 DELETE FROM layoffs_staging2 WHERE total_laid_off IS NULL AND percentage_laid_off = 'None';
+```
+```sql
 ALTER TABLE layoffs_staging2 DROP COLUMN row_num;
+```
