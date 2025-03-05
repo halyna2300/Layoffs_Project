@@ -39,10 +39,12 @@ CREATE TABLE `layoffs_staging` (
 - ** Null values/ blank values**
 - ** Remove any columns**
 
+-- Checking the initial dataset before applying changes
 ```sql
  SELECT * FROM layoffs;
 ```
 
+-- Creating a staging table to work in and keep original data safe
 ```sql
 CREATE TABLE layoffs_staging LIKE layoffs;
 ```
@@ -55,6 +57,7 @@ SELECT * FROM layoffs_staging;
 INSERT INTO layoffs_staging SELECT * FROM layoffs;
 ```
 
+-- Identifying duplicate records using ROW_NUMBER() function
 ```sql
 SELECT *,
 ROW_NUMBER() OVER (
@@ -62,7 +65,7 @@ PARTITION BY company, location, industry, total_laid_off, percentage_laid_off, `
 FROM layoffs_staging;
 ```
 
-
+-- Finding and displaying duplicate records
 ```sql
 WITH duplicate_cte AS (
     SELECT *, ROW_NUMBER() OVER (
@@ -72,11 +75,12 @@ WITH duplicate_cte AS (
 SELECT * FROM duplicate_cte WHERE row_num > 1;
 ```
 
+-- Checking for duplicates in a specific company
 ```sql
 SELECT * FROM layoffs_staging WHERE company = 'Oda';
 ```
 
-
+-- Removing duplicate records from the dataset
 ```sql
 WITH duplicate_cte AS (
     SELECT *, ROW_NUMBER() OVER (
@@ -86,7 +90,7 @@ WITH duplicate_cte AS (
 DELETE FROM duplicate_cte WHERE row_num > 1;
 ```
 
-
+-- Creating a new staging table with an additional column for row numbers
 ```sql
 DROP TABLE IF EXISTS layoffs_staging2;
 CREATE TABLE layoffs_staging2 (
@@ -103,6 +107,7 @@ CREATE TABLE layoffs_staging2 (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 
+-- Inserting data into new staging table and assigning row numbers
 ```sql
 INSERT INTO layoffs_staging2
 SELECT *, ROW_NUMBER() OVER (
@@ -113,13 +118,13 @@ SELECT *, ROW_NUMBER() OVER (
 ```sql
 SELECT * FROM layoffs_staging2;
 ```
-
+-- Updating empty fields to NULL for easier handling
 ```sql
 UPDATE layoffs_staging2 SET date = NULL WHERE date = ' ';
 UPDATE layoffs_staging2 SET total_laid_off = NULL WHERE total_laid_off = '';
 UPDATE layoffs_staging2 SET funds_raised_millions = NULL WHERE funds_raised_millions = '' OR funds_raised_millions = 'None';
 ```
-
+-- Standardizing column values to maintain consistency
 ```sql
 UPDATE layoffs_staging2 SET company = TRIM(company);
 UPDATE layoffs_staging2 SET industry = 'Crypto' WHERE industry LIKE 'Crypto%';
@@ -127,15 +132,16 @@ UPDATE layoffs_staging2 SET country = TRIM(TRAILING '.' FROM country) WHERE coun
 UPDATE layoffs_staging2 SET date = STR_TO_DATE(date, '%m/%d/%Y');
 ```
 
+-- Changing the data type of the date column
 ```sql
 ALTER TABLE layoffs_staging2 MODIFY COLUMN `date` DATE;
 ```
-
+-- Removing rows with no meaningful data
 ```sql
 DELETE FROM layoffs_staging2 WHERE total_laid_off IS NULL
 AND percentage_laid_off = 'None';
 ```
-
+-- Dropping the temporary row number column
 ```sql
 ALTER TABLE layoffs_staging2
 DROP COLUMN row_num;
