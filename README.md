@@ -182,6 +182,7 @@ FROM layoffs_staging2
 GROUP BY industry
 ORDER BY 2 DESC;
 ```
+
 ```sql
 SELECT country, SUM(total_laid_off)
 FROM layoffs_staging2
@@ -196,12 +197,14 @@ FROM layoffs_staging2
 GROUP BY YEAR(date)
 ORDER BY 1 DESC;
 ```
+
 ```sql
 SELECT stage, SUM(total_laid_off)
 FROM layoffs_staging2
 GROUP BY stage
 ORDER BY 2 DESC;
 ```
+
 ```sql
 SELECT company, SUM(percentage_laid_off)
 FROM layoffs_staging2
