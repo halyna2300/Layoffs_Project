@@ -32,10 +32,10 @@ CREATE TABLE `layoffs_staging` (
 ```
 
 ## Data Cleaning Steps
-** Remove duplicates**
-** Standardize the Data**
-** Null values/ blank values**
-** Remove any columns**
+- ** Remove duplicates**
+- ** Standardize the Data**
+- ** Null values/ blank values**
+- ** Remove any columns**
 
 ## SELECT * FROM layoffs;
 
