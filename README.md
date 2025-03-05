@@ -151,10 +151,13 @@ DROP COLUMN row_num;
 SELECT *
 FROM layoffs_staging2;
 ```
+-- Finding the maximum layoffs and highest percentage of layoffs
 ```sql
 SELECT MAX(total_laid_off),MAX(percentage_laid_off)
 FROM layoffs_staging2;
 ```
+
+-- Identifying companies with 100% layoffs
 ```sql
 SELECT *
 FROM layoffs_staging2
@@ -171,6 +174,8 @@ ORDER BY 2 DESC;
 SELECT MIN(date),MAX(date)
 FROM layoffs_staging2;
 ```
+
+-- Ranking industries and companies by the number of layoffs
 ```sql
 SELECT industry, SUM(total_laid_off)
 FROM layoffs_staging2
@@ -183,6 +188,8 @@ FROM layoffs_staging2
 GROUP BY country
 ORDER BY 1 DESC;
 ```
+
+-- Analyzing layoffs trends by year
 ```sql
 SELECT YEAR(date), SUM(total_laid_off)
 FROM layoffs_staging2
@@ -201,14 +208,17 @@ FROM layoffs_staging2
 GROUP BY company
 ORDER BY 2 DESC;
 ```
+
+-- Analyzing layoffs per month to identify trends over time
 ```sql
 SELECT SUBSTRING(`date`, 1,7) AS `MONTH`, SUM(total_laid_off)
 FROM layoffs_staging2
 WHERE SUBSTRING(`date`, 1,7) IS NOT NULL
 GROUP BY `MONTH` 
 ORDER BY 1 ASC;
-SHOW ERRORS;
 ```
+
+-- Calculating rolling total layoffs over time to visualize trends
 ```sql
 WITH Rolling_Total AS
  (
@@ -222,18 +232,23 @@ SELECT `MONTH`,total_off,
 SUM(total_off)OVER(ORDER BY `MONTH`) AS rolling_total
 FROM Rolling_Total;
 ```
+
 ```sql
 SELECT company, SUM(total_laid_off)
 FROM layoffs_staging2
 GROUP BY company
 ORDER BY 2 DESC;
 ```
+
+-- Aggregating layoffs by company and year to track layoffs over time
 ```sql
 SELECT company, YEAR(`date`), SUM(total_laid_off)
 FROM layoffs_staging2
 GROUP BY company,YEAR(`date`)
 ORDER BY 3 DESC;
 ```
+
+-- Ranking companies with the highest layoffs per year using DENSE_RANK()
 ```sql
 WITH Company_Year (company,years,total_laid_off) AS
 (
@@ -246,6 +261,8 @@ FROM Company_Year
 WHERE years IS NOT NULL
 ORDER BY ranking ASC;
 ```
+
+-- Identifying the top 5 companies with the highest layoffs per year
 ```sql
 WITH Company_Year (company,years,total_laid_off) AS
 (
